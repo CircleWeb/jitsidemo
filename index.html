@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>视频问诊 - Jitsi 快速验证</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			padding: 20px;
+			background-color: #f9f9f9;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			background: white;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		h1 {
+			text-align: center;
+		}
+
+		.input-group {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 20px;
+			justify-content: center;
+		}
+
+		input[type="text"] {
+			padding: 10px;
+			font-size: 16px;
+			width: 300px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		button {
+			padding: 10px 20px;
+			font-size: 16px;
+			background-color: #28a745;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #218838;
+		}
+
+		#jitsi-container {
+			width: 100%;
+			height: 500px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			background: #000;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h1>🩺 在线视频问诊（Jitsi 快速验证）</h1>
+		<div class="input-group">
+			<!-- 你可以预设一个默认房间名 -->
+			<input type="text" id="roomNameInput" placeholder="请输入房间名称，例如：doctor-001" value="test-room-abc-123" />
+			<button onclick="joinJitsiRoom()">🚀 进入视频房间</button>
+		</div>
+		<div id="jitsi-container"></div>
+	</div>
+
+	<!-- 加载 Jitsi Meet 的官方外部 API -->
+	<script src="https://meet.jit.si/external_api.js"></script>
+	<script>
+		let api; // 用于保存 Jitsi API 实例
+
+		function joinJitsiRoom() {
+			const roomName = document.getElementById('roomNameInput').value.trim();
+
+			if (!roomName) {
+				alert('❌ 请输入房间名称！');
+				return;
+			}
+
+			const container = document.getElementById('jitsi-container');
+
+			// 如果已存在之前的 Jitsi 实例，先销毁它
+			if (api) {
+				api.dispose();
+			}
+
+			// 初始化 Jitsi Meet 外部 API
+			api = new JitsiMeetExternalAPI('meet.jit.si', {
+				roomName: roomName,
+				width: '100%',
+				height: '100%',
+				parentNode: container,
+
+				// 可选配置项（可根据需求开启/关闭）
+				configOverwrite: {
+					// 开启欢迎页（可选）
+					// enableWelcomePage: true,
+
+					// 默认开启音频 / 视频（用户可自行开关）
+					startWithAudioMuted: false,  // 是否默认静音
+					startWithVideoMuted: false,  // 是否默认关闭摄像头
+
+					// 可选：隐藏某些 UI 控件（进阶配置）
+					// disableChat: true,
+					// disableInviteFunctions: true,
+				},
+				interfaceConfigOverwrite: {
+					// 可选：隐藏顶部栏品牌 LOGO 等（UI 美化，可选）
+					// filmStripOnly: true,
+					// SHOW_JITSI_WATERMARK: false,
+					// SHOW_WATERMARK_FOR_GUESTS: false,
+				}
+			});
+
+			console.log(`✅ 正在加入 Jitsi 房间: ${roomName}`);
+		}
+	</script>
+</body>
+
+</html>
